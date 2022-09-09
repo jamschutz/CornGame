@@ -33,6 +33,9 @@ public class PaddleController : MonoBehaviour
     float startingXPos;
 
 
+    bool[] paddleReleases;
+
+
     void Start()
     {
         rb1 = paddle1Obj.GetComponent<Rigidbody2D>();
@@ -41,6 +44,10 @@ public class PaddleController : MonoBehaviour
         rb4 = paddle4Obj.GetComponent<Rigidbody2D>();
 
         startingXPos = paddle1Obj.transform.position.x;
+
+        paddleReleases = new bool[] {
+            false, false, false, false
+        };
     }
 
 
@@ -48,16 +55,16 @@ public class PaddleController : MonoBehaviour
     void Update()
     {
         // ------------   RESET PADDLE POSITIONS     ------------- //
-        if(!Input.GetKey(paddle1Key)) ResetPaddle(rb1);
-        if(!Input.GetKey(paddle2Key)) ResetPaddle(rb2);
-        if(!Input.GetKey(paddle3Key)) ResetPaddle(rb3);
-        if(!Input.GetKey(paddle4Key)) ResetPaddle(rb4);
+        if(!Input.GetKey(paddle1Key)) ResetPaddle(rb1, 0);
+        if(!Input.GetKey(paddle2Key)) ResetPaddle(rb2, 1);
+        if(!Input.GetKey(paddle3Key)) ResetPaddle(rb3, 2);
+        if(!Input.GetKey(paddle4Key)) ResetPaddle(rb4, 3);
 
         // ------------   CHECK PADDLE RELEASE     ------------- //
-        if(Input.GetKeyUp(paddle1Key)) ReleasePaddle(rb1);
-        if(Input.GetKeyUp(paddle2Key)) ReleasePaddle(rb2);
-        if(Input.GetKeyUp(paddle3Key)) ReleasePaddle(rb3);
-        if(Input.GetKeyUp(paddle4Key)) ReleasePaddle(rb4);
+        if(Input.GetKeyUp(paddle1Key)) ReleasePaddle(rb1, 0);
+        if(Input.GetKeyUp(paddle2Key)) ReleasePaddle(rb2, 1);
+        if(Input.GetKeyUp(paddle3Key)) ReleasePaddle(rb3, 2);
+        if(Input.GetKeyUp(paddle4Key)) ReleasePaddle(rb4, 3);
 
         // ------------   CHECK PADDLE WIND UP     ------------- //
         if(Input.GetKey(paddle1Key) && !Input.GetKeyUp(paddle1Key)) WindPaddle(rb1);
@@ -66,19 +73,22 @@ public class PaddleController : MonoBehaviour
         if(Input.GetKey(paddle4Key) && !Input.GetKeyUp(paddle4Key)) WindPaddle(rb4);
 
         // ------------   CLAMP PADDLE POSITIONS   ------------- //
-        ClampPaddlePosition(rb1);
-        ClampPaddlePosition(rb2);
-        ClampPaddlePosition(rb3);
-        ClampPaddlePosition(rb4);
+        ClampPaddlePosition(rb1, 0);
+        ClampPaddlePosition(rb2, 1);
+        ClampPaddlePosition(rb3, 2);
+        ClampPaddlePosition(rb4, 3);
 
     }
 
 
 
-    void ReleasePaddle(Rigidbody2D rb)
+    void ReleasePaddle(Rigidbody2D rb, int paddleId, bool useWindup = true)
     {
+        paddleReleases[paddleId] = true;
         float windUpAmount = startingXPos - rb.transform.position.x;
-        rb.AddForce(Vector2.right * (paddleForce  + (windUpModifier * windUpAmount)));
+        float moveForce = useWindup? paddleForce  + (windUpModifier * windUpAmount) : paddleForce;
+        Debug.Log($"move force: {moveForce}");
+        rb.AddForce(Vector2.right * moveForce);
     }
 
 
@@ -92,14 +102,20 @@ public class PaddleController : MonoBehaviour
 
 
 
-    void ResetPaddle(Rigidbody2D rb)
+    void ResetPaddle(Rigidbody2D rb, int paddleId)
     {
+        // if currently releasing paddle, ,keep moving forward
+        if(paddleReleases[paddleId]) {
+            ReleasePaddle(rb, paddleId, false);
+            return;
+        }
+
         float newXPos = Mathf.Lerp(startingXPos, rb.transform.position.x, paddleResetSpeed);
         rb.MovePosition(new Vector2(newXPos, rb.transform.position.y));
     }
 
 
-    void ClampPaddlePosition(Rigidbody2D rb)
+    void ClampPaddlePosition(Rigidbody2D rb, int paddleId)
     {
         // check beyond left
         if(rb.transform.position.x < paddleXClamp.x) {
@@ -108,6 +124,7 @@ public class PaddleController : MonoBehaviour
         }
         // check beyond right
         if(rb.transform.position.x > paddleXClamp.y) {
+            paddleReleases[paddleId] = false;
             rb.velocity = Vector2.zero;
             rb.MovePosition(new Vector2(paddleXClamp.y, rb.transform.position.y));
         }
