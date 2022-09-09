@@ -88,7 +88,7 @@ public class PaddleController : MonoBehaviour
         float windUpAmount = startingXPos - rb.transform.position.x;
         float moveForce = useWindup? paddleForce  + (windUpModifier * windUpAmount) : paddleForce;
         Debug.Log($"move force: {moveForce}");
-        rb.AddForce(Vector2.right * moveForce);
+        rb.AddForce(Vector2.right * moveForce * Time.deltaTime);
     }
 
 
