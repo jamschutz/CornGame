@@ -6,10 +6,13 @@ public class CornController : MonoBehaviour
 {
     public Color[] colorPalette;
     public float height;
+    public float growthSpeedPerMinute;
+
 
 
     void Update()
     {
-        transform.localScale = new Vector3(height, height, height);
+        float cornHeight = Time.time / 60.0f * growthSpeedPerMinute;
+        transform.localScale = new Vector3(cornHeight, cornHeight, cornHeight);
     }    
 }
