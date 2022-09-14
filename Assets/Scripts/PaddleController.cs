@@ -34,6 +34,7 @@ public class PaddleController : MonoBehaviour
 
 
     bool[] paddleReleases;
+    float[] paddleSpeeds;
 
 
     void Start()
@@ -48,6 +49,8 @@ public class PaddleController : MonoBehaviour
         paddleReleases = new bool[] {
             false, false, false, false
         };
+
+        paddleSpeeds = new float[] {0, 0, 0, 0 };
     }
 
 
@@ -82,13 +85,20 @@ public class PaddleController : MonoBehaviour
 
 
 
-    void ReleasePaddle(Rigidbody2D rb, int paddleId, bool useWindup = true)
+    void ReleasePaddle(Rigidbody2D rb, int paddleId, bool firstRelease = true)
     {
         paddleReleases[paddleId] = true;
         float windUpAmount = startingXPos - rb.transform.position.x;
-        float moveForce = useWindup? paddleForce  + (windUpModifier * windUpAmount) : paddleForce;
-        Debug.Log($"move force: {moveForce}");
-        rb.AddForce(Vector2.right * moveForce * Time.deltaTime);
+        if(firstRelease) {
+            paddleSpeeds[paddleId] = paddleForce  + (windUpModifier * windUpAmount);
+        }
+        // float moveForce = useWindup? paddleForce  + (windUpModifier * windUpAmount) : paddleForce;
+        Debug.Log($"move force: {paddleSpeeds[paddleId]}");
+        // rb.AddForce(Vector2.right * paddleSpeeds[paddleId] * Time.deltaTime);
+
+        Vector2 movement = Vector2.right * paddleSpeeds[paddleId] * Time.deltaTime;
+        Vector2 pos2D = new Vector2(rb.transform.position.x, rb.transform.position.y);
+        rb.MovePosition(pos2D + movement);
     }
 
 

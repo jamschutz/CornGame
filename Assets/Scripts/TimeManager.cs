@@ -6,6 +6,8 @@ public class TimeManager : MonoBehaviour
 {
     public int secondsInADay = 86400;
     public Transform sun;
+    public SunlightColor[] sunlightColorTimes;
+
 
     public float timeOfDay { get; private set; }
     [SerializeField]
@@ -58,4 +60,13 @@ public class TimeManager : MonoBehaviour
 
         timeOfDay = (Time.time / (float)secondsInADay) % 1.0f;
     }
+}
+
+
+[System.Serializable]
+public class SunlightColor
+{
+    public Color color;
+    [Range(0,1)]
+    public float time;
 }
