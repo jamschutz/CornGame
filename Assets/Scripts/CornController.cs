@@ -43,13 +43,11 @@ public class CornController : MonoBehaviour
         Matrix4x4 localToWorld = transform.localToWorldMatrix;
         Vector3 best = Vector3.negativeInfinity;
         var mesh = cornMesh.mesh;
-        Debug.Log($"num vertices: {mesh.vertices.Length}");
         foreach(var v in mesh.vertices) {
             Vector3 world_v = localToWorld.MultiplyPoint3x4(v);
             best = world_v.y > best.y ? world_v : best;
         }
 
-        Debug.Log($"best: {best.ToString()}");
         return best;
     }
 }

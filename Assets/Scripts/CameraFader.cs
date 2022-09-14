@@ -13,12 +13,14 @@ public class CameraFader : MonoBehaviour
 
     float timer;
     Color imageColor;
+    FadeAudioInOut audio;
 
     void Start()
     {
         timer = 0;
         isFadingIn = false;
         imageColor = Color.black;
+        audio = GetComponent<FadeAudioInOut>();
     }
 
 
@@ -38,11 +40,17 @@ public class CameraFader : MonoBehaviour
 
     public void FadeIn()
     {
+        if(isFadingIn) return;
+
+        audio.BeginFadeOut();
         isFadingIn = true;
     }
 
     public void FadeOut()
     {
+        if(!isFadingIn) return;
+
+        audio.BeginFadeIn();
         isFadingIn = false;
     }
 }

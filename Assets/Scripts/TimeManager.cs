@@ -44,8 +44,6 @@ public class TimeManager : MonoBehaviour
         // not time to rotate one degree yet...
         // if(timer < timeToRotateOneDegree) return;
 
-        Debug.Log("ROTATING SUN");
-
         // rotate one degree
         // sun.Rotate(Vector3.left, 1.0f);
         sun.Rotate(Vector3.left, Time.deltaTime / timeToRotateOneDegree);
