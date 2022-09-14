@@ -30,9 +30,9 @@ public class FadeAudioInOut : MonoBehaviour
         StopCoroutine("FadeOut");
 
         // reset audio clip
-        if(!audio.isPlaying) {
-            audio.time = 15;
-        }
+        // if(!audio.isPlaying) {
+        //     audio.time = 15;
+        // }
         StartCoroutine("FadeIn");
     }
 
@@ -78,6 +78,6 @@ public class FadeAudioInOut : MonoBehaviour
             yield return null;
         }
 
-        audio.Stop();
+        audio.Pause();
     }
 }

@@ -25,7 +25,7 @@ public class CornController : MonoBehaviour
         if(Input.GetKey(KeyCode.Space)) {
             camFader.FadeOut();
             float cornHeight = Time.time / 60.0f * growthSpeedPerMinute;
-            transform.localScale = new Vector3(cornHeight, startingHeight + cornHeight, cornHeight);
+            transform.localScale = new Vector3(startingHeight + cornHeight, startingHeight + cornHeight, startingHeight + cornHeight);
 
             player.position = new Vector3(player.position.x, GetHighestCornVertex(cornHeight).y, player.position.z);
         }
