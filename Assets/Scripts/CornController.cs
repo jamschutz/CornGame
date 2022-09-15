@@ -12,10 +12,14 @@ public class CornController : MonoBehaviour
     public float startingHeight;
 
     CameraFader camFader;
-
+    [SerializeField]
+    float timer;
     void Start()
     {
         camFader = GetComponent<CameraFader>();
+        timer = startingHeight * 60 * growthSpeedPerMinute;
+        transform.localScale = new Vector3(startingHeight, startingHeight, startingHeight);
+        player.position = new Vector3(player.position.x, GetHighestCornVertex(startingHeight).y, player.position.z);
     }
 
 
@@ -24,8 +28,9 @@ public class CornController : MonoBehaviour
 
         if(Input.GetKey(KeyCode.Space)) {
             camFader.FadeOut();
-            float cornHeight = Time.time / 60.0f * growthSpeedPerMinute;
-            transform.localScale = new Vector3(startingHeight + cornHeight, startingHeight + cornHeight, startingHeight + cornHeight);
+            timer += Time.deltaTime;
+            float cornHeight = timer / 60.0f * growthSpeedPerMinute;
+            transform.localScale = new Vector3(cornHeight, cornHeight, cornHeight);
 
             player.position = new Vector3(player.position.x, GetHighestCornVertex(cornHeight).y, player.position.z);
         }
