@@ -28,5 +28,6 @@ public class LockMouse : MonoBehaviour
     public void LockCursor(bool lockCursor)
     {
     	Screen.lockCursor = lockCursor;
+		
     }
 }
